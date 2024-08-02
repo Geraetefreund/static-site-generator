@@ -1,6 +1,15 @@
-import re
-from textnode import TextNode, text_type_text, text_type_image, text_type_link
+import re 
 
+from textnode import (
+    TextNode,
+    text_node_to_html_node,
+    text_type_text,
+    text_type_bold,
+    text_type_italic,
+    text_type_code,
+    text_type_image,
+    text_type_link,
+)
 
 def extract_markdown_images(text):
     return re.findall(r"!\[(.*?)\]\((.*?)\)", text)
@@ -8,6 +17,19 @@ def extract_markdown_images(text):
 
 def extract_markdown_links(text):
     return re.findall(r"\[(.*?)\]\((.*?)\)", text)
+
+
+def text_to_textnodes(text):
+    old_node = TextNode(text, text_type_text)
+
+    new_node = split_nodes_delimiter([old_node], '**', text_type_bold)
+    new_node = split_nodes_delimiter(new_node, '*', text_type_italic)
+    new_node = split_nodes_delimiter(new_node, '`', text_type_code)
+    new_node = split_nodes_image(new_node)
+    new_node = split_nodes_link(new_node)
+    
+    return new_node
+
 
 def split_nodes_image(old_nodes):
     new_nodes = []
