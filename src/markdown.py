@@ -11,6 +11,17 @@ from textnode import (
     text_type_link,
 )
 
+def markdown_to_blocks(markdown):
+    blocks = []
+    split = markdown.split('\n\n')
+    for item in split:
+        if item == "":
+            continue
+        blocks.append(item.strip())
+    return blocks
+
+
+
 def extract_markdown_images(text):
     return re.findall(r"!\[(.*?)\]\((.*?)\)", text)
 
