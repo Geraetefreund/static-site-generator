@@ -1,6 +1,8 @@
 import unittest
 
 from markdown import (
+    split_nodes_image,
+    split_nodes_link,
     split_nodes_delimiter,
     extract_markdown_links,
     extract_markdown_images,
@@ -18,7 +20,26 @@ from textnode import (
 )
 
 
-class test_split_nodes_code(unittest.TestCase):
+class TestSplitNodesCode(unittest.TestCase):
+
+    def test_split_images(self):
+        node = TextNode(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+            text_type_text,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("This is text with an ", text_type_text),
+                TextNode("image", text_type_image, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and another ", text_type_text),
+                TextNode(
+                    "second image", text_type_image, "https://i.imgur.com/3elNhQu.png"
+                ),
+            ],
+            new_nodes,
+        )
+
     def test_delim_code(self):
         node = TextNode("This is text with a `code block` word", text_type_text)
         new_nodes = split_nodes_delimiter([node], '`', text_type_code)
