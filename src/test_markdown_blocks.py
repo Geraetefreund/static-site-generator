@@ -2,10 +2,25 @@ import unittest
 
 from markdown_blocks import (
     markdown_to_blocks,
+    block_to_block_type,
+    block_type_paragraph, 
+    block_type_heading,
+    block_type_code,
+    block_type_quote,
+    block_type_olist,
+    block_type_ulist,
 )
 
 
 class TestMarkdownBlocks(unittest.TestCase):
+
+    def test_blocks_to_markdown_code(self):
+        md = '```This should be a code block\nand it does not matter that it\nhas line breaks.\n```'
+        self.assertEqual(
+            'code',
+            block_to_block_type(md), 
+
+        )
 
     def test_markdown_to_blocks(self):
         md = """
@@ -74,6 +89,19 @@ This is the same paragraph on a new line
         )
 
 
+    def test_block_to_block_types(self):
+        block = '# heading'
+        self.assertEqual(block_to_block_type(block), block_type_heading)
+        block = "```\ncode\n```"
+        self.assertEqual(block_to_block_type(block), block_type_code)
+        block = "> quote\n> more quote"
+        self.assertEqual(block_to_block_type(block), block_type_quote)
+        block = "* list\n* items"
+        self.assertEqual(block_to_block_type(block), block_type_ulist)
+        block = "1. list\n2. items"
+        self.assertEqual(block_to_block_type(block), block_type_olist)
+        block = "paragraph"
+        self.assertEqual(block_to_block_type(block), block_type_paragraph)
 
 if __name__ == "__main__":
     unittest.main()
