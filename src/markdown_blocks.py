@@ -11,12 +11,27 @@ block_type_ulist = "unordered_list"
 
 
 def markdown_to_html_node(markdown):
+    html_node = []
     blocks = markdown_to_blocks(markdown)
-    html_node = [block_to_block_type(block) for block in blocks]
-    return html_node
+    for block in blocks:
+        block_type = block_to_block_type(block)
+        if block_type == block_type_paragraph:
+            html_node.append(block_to_html_p(block))
+        elif block_type == block_type_heading:
+            html_node.append(block_to_html_heading(block))
+        elif block_type == block_type_code:
+            html_node.append(block_to_html_code(block))
+        elif block_type == block_type_quote:
+            html_node.append(block_to_html_quote(block))
+        elif block_type == block_type_olist:
+            html_node.append(block_to_olist(block))
+        elif block_type == block_type_ulist:
+            html_node.append(block_to_ulist(block))
+
+    result = ParentNode('div', html_node)
+    return result.to_html()
+
         
-
-
 def block_to_html_p(block):
     text_nodes = text_to_textnodes(block)
     leaf_nodes = [text_node_to_html_node(node) for node in text_nodes]
@@ -27,22 +42,23 @@ def block_to_html_heading(block):
     if block.startswith('# '):
         value = block.lstrip('# ')
         tag = 'h1'
-    if block.startswith('## '):
+    elif block.startswith('## '):
         value = block.lstrip('## ')
         tag = 'h2'
-    if block.startswith('### '):
+    elif block.startswith('### '):
         value = block.lstrip('### ')
         tag = 'h3'
-    if block.startswith('#### '):
+    elif block.startswith('#### '):
         value = block.lstrip('#### ')
         tag = 'h4'
-    if block.startswith('##### '):
+    elif block.startswith('##### '):
         value = block.lstrip('##### ')
         tag = 'h5'
-    if block.startswith('###### '):
+    elif block.startswith('###### '):
         value = block.lstrip('###### ')
         tag = 'h6'
-    html_node = LeafNode(tag, value)
+    
+    html_node = ParentNode(tag, [LeafNode(None, value)])
     return html_node
 
 def block_to_html_code(block):
@@ -53,9 +69,11 @@ def block_to_html_code(block):
 def block_to_html_quote(block):
     tag = 'blockquote'
     lines = block.splitlines()
-    text = [text.append(line.lstrip('> ')) for line in lines ]
+    text = []
+    for line in lines:
+        text.append(line.lstrip('> '))
     value = "\n".join(text)
-    html_node = LeafNode(tag, value)
+    html_node = ParentNode(tag, [LeafNode(None, value)])
     return html_node
 
 def block_to_ulist(block):
