@@ -9,6 +9,13 @@ block_type_quote = "quote"
 block_type_olist = "ordered_list"
 block_type_ulist = "unordered_list"
 
+def text_to_children(text):
+    text_nodes = text_to_textnodes(text)
+    children = []
+    for text_node in text_nodes:
+        html_node = text_node_to_html_node(text_node)
+        children.append(html_node)
+    return children
 
 def markdown_to_html_node(markdown):
     html_node = []
@@ -16,7 +23,7 @@ def markdown_to_html_node(markdown):
     for block in blocks:
         block_type = block_to_block_type(block)
         if block_type == block_type_paragraph:
-            html_node.append(block_to_html_p(block))
+            html_node.append(paragraph_to_html_node(block))
         elif block_type == block_type_heading:
             html_node.append(block_to_html_heading(block))
         elif block_type == block_type_code:
@@ -31,8 +38,7 @@ def markdown_to_html_node(markdown):
     result = ParentNode('div', html_node)
     return result.to_html()
 
-        
-def block_to_html_p(block):
+def paragraph_to_html_node(block):
     text_nodes = text_to_textnodes(block)
     leaf_nodes = [text_node_to_html_node(node) for node in text_nodes]
     html_node = ParentNode('p', leaf_nodes)
