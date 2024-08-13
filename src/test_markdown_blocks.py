@@ -266,5 +266,10 @@ This is the same paragraph on a new line
         markdown = '# This is the heading'
         self.assertEqual(extract_title(markdown), 'This is the heading')
 
+    def test_extract_title_exception(self):
+        markdown = '## This will not be working'
+        self.assertRaises(Exception)
+
+
 if __name__ == "__main__":
     unittest.main()
