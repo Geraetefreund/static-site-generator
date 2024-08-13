@@ -10,7 +10,12 @@ block_type_olist = "ordered_list"
 block_type_ulist = "unordered_list"
 
 def extract_title(markdown):
-    pass
+    blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        if block_to_block_type(block) == block_type_heading:
+            if block.startswith('# '):
+                return block.strip('# ').strip()
+        raise Exception('No heading found.')
 
 
 def markdown_to_blocks(markdown):

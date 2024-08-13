@@ -1,6 +1,7 @@
 import unittest
 
 from markdown_blocks import (
+    extract_title,
     markdown_to_blocks,
     markdown_to_html_node,
     block_to_block_type,
@@ -260,6 +261,10 @@ This is the same paragraph on a new line
         self.assertEqual(block_to_block_type(block), block_type_olist)
         block = "paragraph"
         self.assertEqual(block_to_block_type(block), block_type_paragraph)
+
+    def test_extract_title(self):
+        markdown = '# This is the heading'
+        self.assertEqual(extract_title(markdown), 'This is the heading')
 
 if __name__ == "__main__":
     unittest.main()
