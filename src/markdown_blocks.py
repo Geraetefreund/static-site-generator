@@ -9,6 +9,10 @@ block_type_quote = "quote"
 block_type_olist = "ordered_list"
 block_type_ulist = "unordered_list"
 
+def extract_title(markdown):
+    pass
+
+
 def markdown_to_blocks(markdown):
     blocks = []
     split = markdown.split('\n\n')

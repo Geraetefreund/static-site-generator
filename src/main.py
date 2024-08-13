@@ -12,7 +12,7 @@ def rem_public():
 
 def copy_from_to(source, destination):
     if not os.path.exists(destination):
-        print('creating folder: public')
+        print(f'creating folder: {destination}')
         os.mkdir(destination)
     items = os.listdir(source)
     for item in items:
@@ -27,6 +27,9 @@ def copy_from_to(source, destination):
             print(f'copying file: {dest}')
             shutil.copy(os.path.join(source, item), os.path.join(destination, item))
     
+def generate_page(from_path, template_path, dest_path):
+    print(f'Generating page from {from_path} to {dest_path} uding {template_path}.')
+
 
 def main():
     try:
