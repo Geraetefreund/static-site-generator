@@ -2,6 +2,7 @@ import os
 import shutil
 from textnode import TextNode
 from htmlnode import HTMLNode, LeafNode, ParentNode
+from markdown_blocks import *
 
 def rem_public():
     path = 'public'
@@ -28,7 +29,17 @@ def copy_from_to(source, destination):
             shutil.copy(os.path.join(source, item), os.path.join(destination, item))
     
 def generate_page(from_path, template_path, dest_path):
-    print(f'Generating page from {from_path} to {dest_path} uding {template_path}.')
+    with open(from_path, 'r') as file:
+        src_file = file.read()
+    with open(template_path, 'r') as file:
+        template = file.read()
+    html_node = markdown_to_html_node(src_file)
+    html_string = html_node.to_html()
+    title = extract_title(src_file)
+    result = template.replace('{{ Title }}', title).replace('{{ Content }}', html_string)
+    with open(dest_path, 'w') as file:
+        file.write(result)
+    #print(f'Generating page from {from_path} to {dest_path} using {template_path}.')
 
 
 def main():
@@ -38,5 +49,8 @@ def main():
         print('folder public does not exist')
 
     copy_from_to('static', 'public')
-main()
+    generate_page('./content/index.md', './template.html', './public/index.html')
+
+if __name__ == '__main__':
+    main()
 
