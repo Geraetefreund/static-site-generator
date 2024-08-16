@@ -41,6 +41,19 @@ def generate_page(from_path, template_path, dest_path):
         file.write(result)
     #print(f'Generating page from {from_path} to {dest_path} using {template_path}.')
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    items = os.listdir(dir_path_content)
+    for item in items:
+        src_path = os.path.join(dir_path_content, item) 
+        dest_path = os.path.join(dest_dir_path, item) 
+        if os.path.isdir(src_path):
+            print(f'creating directory: {dest_path}')
+            os.mkdir(dest_path)
+            generate_pages_recursive(src_path, template_path, dest_path)
+        else:
+            dest_path = dest_path.replace('.md', '.html')
+            generate_page(src_path, template_path, dest_path)
+
 
 def main():
     try:
@@ -49,7 +62,8 @@ def main():
         print('folder public does not exist')
 
     copy_from_to('static', 'public')
-    generate_page('./content/index.md', './template.html', './public/index.html')
+    #generate_page('./content/index.md', './template.html', './public/index.html')
+    generate_pages_recursive('content', 'template.html', 'public')
 
 if __name__ == '__main__':
     main()
